@@ -43,11 +43,14 @@ export const create = (state, data, creator = defaultCreator) =>
 export function createAll(state, data, creator = defaultCreator) {
   data = data.map(creator);
   return {
-    allIds: [...state.allIds, data.map(x => x.id)],
-    byId: data.reduce((byId, x) => {
-      byId[x.id] = x;
-      return byId;
-    }, state.byId)
+    allIds: [...state.allIds, ...data.map(x => x.id)],
+    byId: data.reduce(
+      (byId, x) => {
+        byId[x.id] = x;
+        return byId;
+      },
+      { ...state.byId }
+    )
   };
 }
 

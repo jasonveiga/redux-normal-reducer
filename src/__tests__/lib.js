@@ -42,10 +42,30 @@ export const namedData = (id, data = {}) => ({
   ...data
 });
 
-export function randNamedData(id, dataSize = 5, data = {}) {
+export function addRandKey(data) {
+  let x = randStringNot(Object.keys(data));
+  return { ...data, [x]: randData() };
+}
+
+export function modifyRandKey(data) {
+  let vars = Object.keys(data).filter(k => k !== "id");
+  let x = randString(vars);
+  return { ...data, [x]: randData() };
+}
+
+export function removeRandKey(data) {
+  let vars = Object.keys(data).filter(k => k !== "id");
+  let x = randString(vars);
+  data = { ...data };
+  delete data[x];
+  return data;
+}
+
+export function randNamedData(id = "", dataSize = 5, data = {}) {
   let vars = [];
   let values = [];
   let d = { ...data };
+  id = id || randString();
   dataSize = Math.min(dataSize, foobar.length);
 
   while (vars.length < dataSize) {
