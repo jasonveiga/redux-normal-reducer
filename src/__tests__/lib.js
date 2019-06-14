@@ -90,3 +90,19 @@ export function randItems(size = 5, dataSize = 5, items = [], data = {}) {
 }
 
 export const randState = (...args) => stateFromItems(randItems(...args));
+
+export const testRefEq = (a, b) => expect(a === b).toBe(true);
+
+export const testRefNe = (a, b) => expect(a === b).toBe(false);
+
+export function testStateRefEq(a, b) {
+  testRefEq(a, b);
+  testRefEq(a.allIds, b.allIds);
+  testRefEq(a.byId, b.byId);
+}
+
+export function testStateRefNe(a, b) {
+  testRefNe(a, b);
+  testRefNe(a.allIds, b.allIds);
+  testRefNe(a.byId, b.byId);
+}
