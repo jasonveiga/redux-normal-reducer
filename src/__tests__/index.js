@@ -1,10 +1,11 @@
-const normal = require("./index.js");
+const normal = require("../index.js");
 
 const CREATE = "CREATE";
 const ADD = "ADD";
 const REMOVE = "REMOVE";
 const MOVE = "MOVE";
 const MERGE = "MERGE";
+
 const ACTION_TYPES = {
   create: CREATE,
   add: ADD,
