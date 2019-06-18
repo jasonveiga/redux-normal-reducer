@@ -31,12 +31,12 @@ export const mergeSafe = (state, data, merger = shallowMerge) =>
     ? merge(state, data, merger)
     : add(state, data);
 
-export const mergeAllSafe = (state, data, merger) =>
-  mergeAll(
-    addAll(state, filterUnknownData(data)),
-    filterKnownData(state, data),
-    merger
-  );
+export const mergeAllSafe = (state, data, merger = shallowMerge) => {
+  let unknown = filterUnknownData(state, data);
+  let known = filterKnownData(state, data);
+  state = unknown.length ? addAll(state, unknown) : state;
+  return mergeAll(state, known, merger);
+};
 
 export const replaceSafe = (state, data) =>
   state.byId.hasOwnProperty(data.id) ? replace(state, data) : add(state, data);

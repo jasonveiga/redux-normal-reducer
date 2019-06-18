@@ -63,7 +63,7 @@ export const mergeAll = (state, data, merger = shallowMerge) =>
 export function move(state, from, to) {
   let allIds = state.allIds.filter(i => i !== from).concat([to]);
   let byId = { ...state.byId };
-  byId[to] = { ...byId[from] };
+  byId[to] = { ...byId[from], id: to };
   delete byId[from];
   return { ...state, allIds, byId };
 }

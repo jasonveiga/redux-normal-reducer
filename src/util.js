@@ -1,8 +1,8 @@
 export const filterKnownData = (state, data) =>
-  data.filter(x => state.byId.hasOwnProperty[x.id]);
+  data.filter(x => state.byId.hasOwnProperty(x.id));
 
 export const filterUnknownData = (state, data) =>
-  data.filter(x => !state.byId.hasOwnProperty[x.id]);
+  data.filter(x => !state.byId.hasOwnProperty(x.id));
 
 export const toArray = state => state.allIds.map(i => state.byId[i]);
 

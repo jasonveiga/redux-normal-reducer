@@ -19,7 +19,7 @@ const randInt = (max = 20, min = 0) => min + Math.floor(Math.random() * max);
 
 const randString = (strings = foobar) => strings[randInt(strings.length)];
 
-function randStringNot(not) {
+export function randStringNot(not) {
   not = new Set(not);
   let fb = foobar.filter(x => !not.has(x));
 

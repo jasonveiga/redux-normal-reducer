@@ -79,7 +79,7 @@ test("move an item", () => {
   let state = fooState();
   let next = reducer(state, { type: MOVE, from: "foo", to: "bar" });
   let expected = barState();
-  expected.byId.bar = { ...state.byId.foo };
+  expected.byId.bar = { ...state.byId.foo, id: "bar" };
   expect(next).toEqual(expected);
   expect(next === state).toBe(false);
 });
