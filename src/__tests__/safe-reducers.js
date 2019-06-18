@@ -22,7 +22,10 @@ import {
   mergeTest,
   mergeAllTest,
   addUnsafeTest,
-  addAllUnsafeTest
+  addAllUnsafeTest,
+  createUnsafeTest,
+  createAllUnsafeTest,
+  mergeUnsafeTest
 } from "./reducers-lib";
 
 import { testStateRefEq, testStateRefNe, stateFromItems } from "./lib";
@@ -53,6 +56,33 @@ test(
   addAllUnsafeTest(addAllSafe, (next, all, toAdd, state) => {
     let n = next();
     expect(n).toEqual(stateFromItems(all.concat([toAdd[2]])));
+    testStateRefNe(state, n);
+  })
+);
+
+test(
+  "safe create ignore",
+  createUnsafeTest(createSafe, (next, all, toCreate, state) => {
+    let n = next();
+    expect(n).toEqual(state);
+    testStateRefEq(state, n);
+  })
+);
+
+test(
+  "safe create all ignore",
+  createAllUnsafeTest(addAllSafe, (next, all, toAdd, state) => {
+    let n = next();
+    expect(n).toEqual(stateFromItems(all.concat([toAdd[2]])));
+    testStateRefNe(state, n);
+  })
+);
+
+test(
+  "safe merge ignore",
+  mergeUnsafeTest(mergeSafe, (next, all, toMerge, state) => {
+    let n = next();
+    expect(n).toEqual(stateFromItems(all.concat([toMerge])));
     testStateRefNe(state, n);
   })
 );

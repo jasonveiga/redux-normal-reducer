@@ -104,3 +104,25 @@ export const addAllUnsafeTest = (addAll, cb) => () => {
   let toAdd = randItems(3).map((x, i) => ({ ...x, id: allItems[i + 1].id }));
   cb(() => addAll(state, toAdd), initItems, toAdd, state);
 };
+
+export const createUnsafeTest = (create, cb) => () => {
+  let all = randItems(5);
+  let state = stateFromItems(all);
+  let toCreate = all[2];
+  cb(() => create(state, toCreate), all, toCreate, state);
+};
+
+export const createAllUnsafeTest = (createAll, cb, creator) => () => {
+  let allItems = randItems(5);
+  let initItems = allItems.slice(0, 3);
+  let state = stateFromItems(initItems);
+  let toAdd = randItems(3).map((x, i) => ({ ...x, id: allItems[i + 1].id }));
+  cb(() => createAll(state, toAdd, creator), initItems, toAdd, state);
+};
+
+export const mergeUnsafeTest = (merge, cb) => () => {
+  let all = randItems(5);
+  let state = stateFromItems(all.slice(0, 3));
+  let toMerge = all[4];
+  cb(() => merge(state, toMerge), all.slice(0, 3), toMerge, state);
+};
