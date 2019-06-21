@@ -1,10 +1,8 @@
 import {
-  addSafe,
-  addAllSafe,
-  createSafe,
-  createAllSafe,
-  mergeSafe,
-  mergeAllSafe,
+  addIfNew,
+  addAllIfNew,
+  createIfNew,
+  createAllIfNew,
   moveSafe,
   replaceSafe,
   replaceAllSafe,
@@ -19,14 +17,10 @@ import {
   createAllTest,
   createCustomTest,
   createAllCustomTest,
-  mergeTest,
-  mergeAllTest,
   addUnsafeTest,
   addAllUnsafeTest,
   createUnsafeTest,
   createAllUnsafeTest,
-  mergeUnsafeTest,
-  mergeAllUnsafeTest,
   replaceUnsafeTest,
   replaceAllUnsafeTest,
   moveUnsafeTest,
@@ -36,21 +30,19 @@ import {
 
 import { testStateRefEq, testStateRefNe, stateFromItems } from "./lib";
 
-test("safe add normal", addTest(addSafe));
-test("safe add all normal", addAllTest(addAllSafe));
-test("safe create normal", createTest(createSafe));
-test("safe create all normal", createAllTest(createAllSafe));
-test("safe create custom creator normal", createCustomTest(createSafe));
+test("safe add normal", addTest(addIfNew));
+test("safe add all normal", addAllTest(addAllIfNew));
+test("safe create normal", createTest(createIfNew));
+test("safe create all normal", createAllTest(createAllIfNew));
+test("safe create custom creator normal", createCustomTest(createIfNew));
 test(
   "safe create all custom creator normal",
-  createAllCustomTest(createAllSafe)
+  createAllCustomTest(createAllIfNew)
 );
-test("safe merge normal", mergeTest(mergeSafe));
-test("safe merge all normal", mergeAllTest(mergeAllSafe));
 
 test(
   "safe add ignore",
-  addUnsafeTest(addSafe, (next, all, toAdd, state) => {
+  addUnsafeTest(addIfNew, (next, all, toAdd, state) => {
     let n = next();
     expect(n).toEqual(state);
     testStateRefEq(state, n);
@@ -59,7 +51,7 @@ test(
 
 test(
   "safe add all ignore",
-  addAllUnsafeTest(addAllSafe, (next, all, toAdd, state) => {
+  addAllUnsafeTest(addAllIfNew, (next, all, toAdd, state) => {
     let n = next();
     expect(n).toEqual(stateFromItems(all.concat([toAdd[2]])));
     testStateRefNe(state, n);
@@ -68,7 +60,7 @@ test(
 
 test(
   "safe create ignore",
-  createUnsafeTest(createSafe, (next, all, toCreate, state) => {
+  createUnsafeTest(createIfNew, (next, all, toCreate, state) => {
     let n = next();
     expect(n).toEqual(state);
     testStateRefEq(state, n);
@@ -77,28 +69,9 @@ test(
 
 test(
   "safe create all ignore",
-  createAllUnsafeTest(addAllSafe, (next, all, toAdd, state) => {
+  createAllUnsafeTest(addAllIfNew, (next, all, toAdd, state) => {
     let n = next();
     expect(n).toEqual(stateFromItems(all.concat([toAdd[2]])));
-    testStateRefNe(state, n);
-  })
-);
-
-test(
-  "safe merge ignore",
-  mergeUnsafeTest(mergeSafe, (next, all, toMerge, state) => {
-    let n = next();
-    expect(n).toEqual(stateFromItems(all.concat([toMerge])));
-    testStateRefNe(state, n);
-  })
-);
-
-test(
-  "safe merge all ignore",
-  mergeAllUnsafeTest(mergeAllSafe, (next, all, toMerge, state) => {
-    let merged = all.slice(1, 3).map((x, i) => ({ ...x, ...toMerge[i] }));
-    let n = next();
-    expect(n).toEqual(stateFromItems([all[0], ...merged, toMerge[2]]));
     testStateRefNe(state, n);
   })
 );

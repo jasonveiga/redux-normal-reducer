@@ -1,6 +1,8 @@
 import {
   add,
   addAll,
+  addOrMerge,
+  addOrMergeAll,
   addOrReplace,
   addOrReplaceAll,
   create,
@@ -16,7 +18,6 @@ import {
 
 import {
   addRandKey,
-  emptyState,
   modifyRandKey,
   randItems,
   randNamedData,
@@ -25,6 +26,7 @@ import {
   stateFromItems,
   testRefEq,
   testRefNe,
+  testStateRefEq,
   testStateRefNe
 } from "./lib";
 
@@ -42,6 +44,33 @@ import {
 test("add reducer", addTest(add));
 
 test("add all reducer", addAllTest(addAll));
+
+test("add/merge reducer", () => {
+  let allItems = randItems(3);
+  let state = stateFromItems(allItems.slice(0, 2));
+  let toAdd = allItems[2];
+  let toMerge = randNamedData(allItems[1].id);
+  let next = addOrMerge(state, toAdd);
+  expect(next).toEqual(stateFromItems(allItems));
+  testStateRefNe(state, next);
+  next = addOrMerge(next, toMerge);
+  expect(next).toEqual(
+    stateFromItems([allItems[0], { ...allItems[1], ...toMerge }, allItems[2]])
+  );
+  testStateRefNe(state, next);
+});
+
+test("add/merge all reducer", () => {
+  let allItems = randItems(3);
+  let state = stateFromItems(allItems.slice(0, 2));
+  let toAdd = allItems[2];
+  let toMerge = randNamedData(allItems[1].id);
+  let next = addOrMergeAll(state, [toAdd, toMerge]);
+  expect(next).toEqual(
+    stateFromItems([allItems[0], { ...allItems[1], ...toMerge }, allItems[2]])
+  );
+  testStateRefNe(state, next);
+});
 
 test("add/replace reducer", () => {
   let allItems = randItems(3);
@@ -164,3 +193,23 @@ test("remove all reducer", () => {
   expect(next).toEqual(stateFromItems([allItems[1]]));
   testStateRefNe(state, next);
 });
+
+let arrayReducers = [
+  addAll,
+  addOrMergeAll,
+  addOrReplaceAll,
+  createAll,
+  mergeAll,
+  replaceAll,
+  removeAll
+];
+
+arrayReducers.forEach(reducer =>
+  test(`${reducer.name} returns same state with no data passed in`, () => {
+    let allItems = randItems(3);
+    let state = stateFromItems(allItems);
+    let next = reducer(state, []);
+    expect(next).toEqual(state);
+    testStateRefEq(next, state);
+  })
+);

@@ -15,12 +15,10 @@ import {
 } from "./reducers";
 
 import {
-  addSafe,
-  addAllSafe,
-  createSafe,
-  createAllSafe,
-  mergeSafe,
-  mergeAllSafe,
+  addIfNew,
+  addAllIfNew,
+  createIfNew,
+  createAllIfNew,
   moveSafe,
   replaceSafe,
   replaceAllSafe
@@ -51,15 +49,15 @@ function reducer(
   let reducers = {};
 
   if (options.safe === true) {
-    reducers.create = createSafe;
-    reducers.createAll = createAllSafe;
-    reducers.add = addSafe;
-    reducers.addAll = addAllSafe;
+    reducers.create = createIfNew;
+    reducers.createAll = createAllIfNew;
+    reducers.add = addIfNew;
+    reducers.addAll = addAllIfNew;
     reducers.replace = replaceSafe;
     reducers.replaceAllSafe = replaceAllSafe;
     reducers.move = moveSafe;
-    reducers.merge = mergeSafe;
-    reducers.mergeAll = mergeAllSafe;
+    reducers.merge = merge;
+    reducers.mergeAll = mergeAll;
   } else if (options.safe === false) {
     reducers.create = create;
     reducers.createAll = createAll;
@@ -71,15 +69,15 @@ function reducer(
     reducers.merge = merge;
     reducers.mergeAll = mergeAll;
   } else {
-    reducers.create = options.safe.create ? createSafe : create;
-    reducers.createAll = options.safe.createAll ? createAllSafe : createAll;
-    reducers.add = options.safe.add ? addSafe : add;
-    reducers.addAll = options.safe.addAll ? addAllSafe : addAll;
+    reducers.create = options.safe.create ? createIfNew : create;
+    reducers.createAll = options.safe.createAll ? createAllIfNew : createAll;
+    reducers.add = options.safe.add ? addIfNew : add;
+    reducers.addAll = options.safe.addAll ? addAllIfNew : addAll;
     reducers.replace = options.safe.replace ? replaceSafe : replace;
     reducers.replaceAll = options.safe.replaceAll ? replaceAllSafe : replaceAll;
     reducers.move = options.safe.move ? moveSafe : move;
-    reducers.merge = options.safe.merge ? mergeSafe : merge;
-    reducers.mergeAll = options.safe.mergeAll ? mergeAllSafe : mergeAll;
+    reducers.merge = merge;
+    reducers.mergeAll = mergeAll;
   }
 
   return (state = defaultState, action) => {
@@ -132,12 +130,10 @@ export {
   removeAll,
   replace,
   replaceAll,
-  addSafe,
-  addAllSafe,
-  createSafe,
-  createAllSafe,
-  mergeSafe,
-  mergeAllSafe,
+  addIfNew,
+  addAllIfNew,
+  createIfNew,
+  createAllIfNew,
   moveSafe,
   replaceSafe,
   replaceAllSafe,

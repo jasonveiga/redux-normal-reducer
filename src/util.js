@@ -8,17 +8,13 @@ export const toArray = state => state.allIds.map(i => state.byId[i]);
 
 export const map = (state, fn) => toArray(state).map(fn);
 
-export const sort = (state, fn) => toArray(state).sort(fn);
+const defaultSorter = (a, b) => a.id.localeCompare(b.id);
 
-export const sortIds = (state, fn) =>
-  state.allIds.sort(fn).map(i => state.byId[i]);
+export const sort = (state, fn = defaultSorter) => toArray(state).sort(fn);
 
 export const forEach = (state, fn) => toArray(state).forEach(fn);
 
 export const filter = (state, fn) => toArray(state).filter(fn);
-
-export const filterIds = (state, fn) =>
-  state.allIds.filter(fn).map(i => state.byId[i]);
 
 export const exists = (state, id) => state.byId.hasOwnProperty(id);
 
@@ -32,4 +28,14 @@ export function anyExist(state, ids) {
     }
   }
   return false;
+}
+
+export function deleteKey(obj, k) {
+  if (obj.hasOwnProperty(k)) {
+    obj = { ...obj };
+    delete obj[k];
+    return obj;
+  } else {
+    return obj;
+  }
 }
