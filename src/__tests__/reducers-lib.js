@@ -126,3 +126,53 @@ export const mergeUnsafeTest = (merge, cb) => () => {
   let toMerge = all[4];
   cb(() => merge(state, toMerge), all.slice(0, 3), toMerge, state);
 };
+
+export const mergeAllUnsafeTest = (mergeAll, cb, creator) => () => {
+  let allItems = randItems(5);
+  let initItems = allItems.slice(0, 3);
+  let state = stateFromItems(initItems);
+  let toMerge = randItems(3).map((x, i) => ({ ...x, id: allItems[i + 1].id }));
+  cb(() => mergeAll(state, toMerge, creator), initItems, toMerge, state);
+};
+
+export const replaceUnsafeTest = (replace, cb) => () => {
+  let allItems = randItems(5);
+  let state = stateFromItems(allItems);
+  let toReplace = randNamedData();
+  toReplace.id = randStringNot(allItems.map(x => x.id));
+  cb(() => replace(state, toReplace), allItems, toReplace, state);
+};
+
+export const replaceAllUnsafeTest = (replaceAll, cb) => () => {
+  let allItems = randItems(5);
+  let initItems = allItems.slice(0, 3);
+  let state = stateFromItems(initItems);
+  let toReplace = randItems(3).map((x, i) => ({
+    ...x,
+    id: allItems[i + 1].id
+  }));
+  cb(() => replaceAll(state, toReplace), initItems, toReplace, state);
+};
+
+export const moveUnsafeTest = (move, cb) => () => {
+  let allItems = randItems(3);
+  let state = stateFromItems(allItems);
+  let from = randStringNot(allItems.map(x => x.id));
+  let to = randStringNot(allItems.map(x => x.id).concat([from]));
+  cb(() => move(state, from, to), allItems, from, to, state);
+};
+
+export const removeUnsafeTest = (remove, cb) => () => {
+  let allItems = randItems(3);
+  let state = stateFromItems(allItems);
+  let toRemove = randStringNot(allItems.map(x => x.id));
+  cb(() => remove(state, toRemove), allItems, toRemove, state);
+};
+
+export const removeAllUnsafeTest = (removeAll, cb) => () => {
+  let allItems = randItems(5);
+  let initItems = allItems.slice(0, 3);
+  let state = stateFromItems(initItems);
+  let toRemove = allItems.slice(1, 4).map(x => x.id);
+  cb(() => removeAll(state, toRemove), allItems, toRemove, state);
+};

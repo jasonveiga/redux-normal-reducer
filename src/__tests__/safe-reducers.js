@@ -9,7 +9,7 @@ import {
   replaceSafe,
   replaceAllSafe,
   removeSafe,
-  removeAll
+  removeAllSafe
 } from "../safe-reducers";
 
 import {
@@ -25,7 +25,13 @@ import {
   addAllUnsafeTest,
   createUnsafeTest,
   createAllUnsafeTest,
-  mergeUnsafeTest
+  mergeUnsafeTest,
+  mergeAllUnsafeTest,
+  replaceUnsafeTest,
+  replaceAllUnsafeTest,
+  moveUnsafeTest,
+  removeUnsafeTest,
+  removeAllUnsafeTest
 } from "./reducers-lib";
 
 import { testStateRefEq, testStateRefNe, stateFromItems } from "./lib";
@@ -83,6 +89,61 @@ test(
   mergeUnsafeTest(mergeSafe, (next, all, toMerge, state) => {
     let n = next();
     expect(n).toEqual(stateFromItems(all.concat([toMerge])));
+    testStateRefNe(state, n);
+  })
+);
+
+test(
+  "safe merge all ignore",
+  mergeAllUnsafeTest(mergeAllSafe, (next, all, toMerge, state) => {
+    let merged = all.slice(1, 3).map((x, i) => ({ ...x, ...toMerge[i] }));
+    let n = next();
+    expect(n).toEqual(stateFromItems([all[0], ...merged, toMerge[2]]));
+    testStateRefNe(state, n);
+  })
+);
+
+test(
+  "safe replace not exists",
+  replaceUnsafeTest(replaceSafe, (next, all, toReplace, state) => {
+    let n = next();
+    expect(n).toEqual(stateFromItems(all.concat([toReplace])));
+    testStateRefNe(state, n);
+  })
+);
+
+test(
+  "safe replace all not exists",
+  replaceAllUnsafeTest(replaceAllSafe, (next, all, toReplace, state) => {
+    let n = next();
+    expect(n).toEqual(stateFromItems([all[0], ...toReplace]));
+    testStateRefNe(state, n);
+  })
+);
+
+test(
+  "safe move not exists",
+  moveUnsafeTest(moveSafe, (next, all, from, to, state) => {
+    let n = next();
+    expect(n).toEqual(state);
+    testStateRefEq(state, n);
+  })
+);
+
+test(
+  "safe remove not exists",
+  removeUnsafeTest(removeSafe, (next, all, toRemove, state) => {
+    let n = next();
+    expect(n).toEqual(state);
+    testStateRefEq(state, n);
+  })
+);
+
+test(
+  "safe remove all not existing",
+  removeAllUnsafeTest(removeAllSafe, (next, all, toRemove, state) => {
+    let n = next();
+    expect(n).toEqual(stateFromItems([all[0]]));
     testStateRefNe(state, n);
   })
 );
