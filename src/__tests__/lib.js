@@ -23,7 +23,9 @@ export function randStringNot(not) {
   not = new Set(not);
   let fb = foobar.filter(x => !not.has(x));
 
+  /* istanbul ignore next */
   if (!fb.length) {
+    /* istanbul ignore next */
     throw new Error(`ran out of random strings not = ${not.join(", ")}`);
   }
 
@@ -36,7 +38,7 @@ const randGenerators = [randString, randInt, randBool];
 
 const randData = () => randGenerators[randInt(randGenerators.length)]();
 
-export const namedData = (id, data = {}) => ({
+export const namedData = (id, data) => ({
   id,
   name: id.charAt(0).toLocaleUpperCase() + id.slice(1),
   ...data

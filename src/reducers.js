@@ -166,28 +166,42 @@ export function removeAll(state, { ids }) {
   return { ...state, allIds, byId };
 }
 
-export const addIfNew = (state, data) =>
-  state.byId.hasOwnProperty(data.id) ? state : add(state, data);
+export const addIfNew = (state, action) =>
+  state.byId.hasOwnProperty(action.data.id) ? state : add(state, action);
 
-export const addAllIfNew = (state, data) =>
-  addAll(state, filterUnknownData(state, data));
+export const addAllIfNew = (state, action) =>
+  addAll(state, actionFilterUnknown(state, action));
 
-export const createIfNew = (state, data, creator = defaultCreator) =>
-  state.byId.hasOwnProperty(data.id) ? state : create(state, data, creator);
+export function createIfNewReducer(creator = defaultCreator) {
+  const create = createReducer(creator);
 
-export const createAllIfNew = (state, data, creator = defaultCreator) =>
-  createAll(state, filterUnknownData(state, data), creator);
+  return function createIfNew(state, action) {
+    return state.byId.hasOwnProperty(action.data.id)
+      ? state
+      : create(state, action);
+  };
+}
 
-export const replaceExisting = (state, data) =>
-  state.byId.hasOwnProperty(data.id) ? replace(state, data) : add(state, data);
+export const createIfNew = createIfNewReducer();
 
-export const replaceAllExisting = (state, data) =>
-  replaceAll(
-    addAll(state, filterUnknownData(state, data)),
-    filterKnownData(state, data)
-  );
+export function createAllIfNewReducer(creator = defaultCreator) {
+  const createAll = createAllReducer(creator);
 
-export const moveSafe = (state, from, to) =>
-  state.byId.hasOwnProperty(from) && !state.byId.hasOwnProperty(to)
-    ? move(state, from, to)
+  return function createAllIfNew(state, action) {
+    return createAll(state, actionFilterUnknown(state, action));
+  };
+}
+
+export const createAllIfNew = createAllIfNewReducer();
+
+export const replaceExisting = (state, action) =>
+  state.byId.hasOwnProperty(action.data.id) ? replace(state, action) : state;
+
+export const replaceAllExisting = (state, action) =>
+  replaceAll(state, actionFilterKnown(state, action));
+
+export const moveSafe = (state, action) =>
+  state.byId.hasOwnProperty(action.from) &&
+  !state.byId.hasOwnProperty(action.to)
+    ? move(state, action)
     : state;

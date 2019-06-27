@@ -33,6 +33,18 @@ export const addTest = add => () => {
   testStateRefNe(state, next);
 };
 
+export const addAllIfNewTest = addAllIfNew => () => {
+  let all = randItems(5);
+  let init = all.slice(0, 3);
+  let state = stateFromItems(init);
+  let ac = actionCreators.addAllIfNew;
+  let toAdd = [{ ...all[3], id: all[2].id }, all[4]];
+  let next = addAllIfNew(state, ac(toAdd));
+  expect(next).toEqual(stateFromItems(init.concat([all[4]])));
+  testStateRefNe(state, next);
+  noDataTest(addAllIfNew, ac);
+};
+
 export const addAllTest = addAll => () => {
   let allItems = randItems(5);
   let state = stateFromItems(allItems.slice(0, 2));
@@ -41,6 +53,17 @@ export const addAllTest = addAll => () => {
   expect(next).toEqual(stateFromItems(allItems));
   testStateRefNe(state, next);
   noDataTest(addAll, ac);
+};
+
+export const addIfNewTest = addIfNew => () => {
+  let all = randItems(5);
+  let init = all.slice(0, 3);
+  let state = stateFromItems(init);
+  let ac = actionCreators.createIfNew;
+  let toAdd = { ...all[3], id: all[2].id };
+  let next = addIfNew(state, ac(toAdd));
+  expect(next).toEqual(state);
+  testStateRefEq(state, next);
 };
 
 export const addOrMergeTest = addOrMerge => () => {
@@ -86,7 +109,7 @@ export const addOrReplaceTest = addOrReplace => () => {
 };
 
 export const addOrReplaceAllTest = addOrReplaceAll => () => {
-  let allItems = randItems(3);
+  let allItems = randItems(5);
   let state = stateFromItems(allItems.slice(0, 2));
   let toAdd = allItems[2];
   let toReplace = randNamedData(allItems[1].id);
@@ -95,6 +118,31 @@ export const addOrReplaceAllTest = addOrReplaceAll => () => {
   expect(next).toEqual(stateFromItems([allItems[0], toReplace, allItems[2]]));
   testStateRefNe(state, next);
   noDataTest(addOrReplaceAll, ac);
+
+  // All totally new items
+  toAdd = allItems.slice(2);
+  next = addOrReplaceAll(state, ac(toAdd));
+  expect(next).toEqual(stateFromItems(allItems));
+  testStateRefNe(state, next);
+
+  // All existing items (branch coverage)
+  toReplace = [randNamedData(allItems[0].id)];
+  next = addOrReplaceAll(state, ac(toReplace));
+  expect(next).toEqual(stateFromItems([toReplace[0], allItems[1]]));
+  testRefNe(state, next);
+  testRefNe(state.byId, next.byId);
+  testRefEq(state.allIds, next.allIds);
+};
+
+export const createIfNewTest = createIfNew => () => {
+  let all = randItems(5);
+  let init = all.slice(0, 3);
+  let state = stateFromItems(init);
+  let ac = actionCreators.createIfNew;
+  let toCreate = { ...all[3], id: all[2].id };
+  let next = createIfNew(state, ac(toCreate));
+  expect(next).toEqual(state);
+  testStateRefEq(state, next);
 };
 
 export const createTest = create => () => {
@@ -103,6 +151,18 @@ export const createTest = create => () => {
   let next = create(state, actionCreators.create(toCreate));
   expect(next).toEqual(stateFromItems([toCreate]));
   testStateRefNe(state, next);
+};
+
+export const createAllIfNewTest = createAllIfNew => () => {
+  let all = randItems(5);
+  let init = all.slice(0, 3);
+  let state = stateFromItems(init);
+  let ac = actionCreators.createAllIfNew;
+  let toCreate = [{ ...all[3], id: all[2].id }, all[4]];
+  let next = createAllIfNew(state, ac(toCreate));
+  expect(next).toEqual(stateFromItems(init.concat([all[4]])));
+  testStateRefNe(state, next);
+  noDataTest(createAllIfNew, ac);
 };
 
 export const createAllTest = createAll => () => {
@@ -211,6 +271,23 @@ export const moveTest = move => () => {
   testStateRefNe(state, next);
 };
 
+export const moveSafeTest = moveSafe => () => {
+  let allItems = randItems(5);
+  let state = stateFromItems(allItems.slice(0, 3));
+  let from = allItems[3].id;
+  let to = allItems[4].id;
+
+  let next = moveSafe(state, actionCreators.move(from, to));
+  expect(next).toEqual(state);
+  testStateRefEq(next, state);
+
+  from = allItems[2].id;
+  to = allItems[1].id;
+  next = moveSafe(state, actionCreators.move(from, to));
+  expect(next).toEqual(state);
+  testStateRefEq(next, state);
+};
+
 export const replaceTest = replace => () => {
   let allItems = randItems(3);
   let state = stateFromItems(allItems.slice(0, 2));
@@ -240,12 +317,44 @@ export const replaceAllTest = replaceAll => () => {
   noDataTest(replaceAll, ac);
 };
 
+export const replaceAllExistingTest = replaceAllExisting => () => {
+  let all = randItems();
+  let init = all.slice(0, 3);
+  let state = stateFromItems(init);
+  let a = { ...all[3], id: all[1].id };
+  let b = { ...all[4], id: all[3].id };
+  let toReplace = [a, b];
+  let next = replaceAllExisting(
+    state,
+    actionCreators.replaceAllExisting(toReplace)
+  );
+  expect(next).toEqual(stateFromItems([init[0], a, init[2]]));
+  testRefNe(state, next);
+  testRefNe(state.byId, next.byId);
+  testRefEq(state.allIds, next.allIds);
+};
+
+export const replaceExistingTest = replaceExisting => () => {
+  let allItems = randItems(5);
+  let init = allItems.slice(0, 3);
+  let state = stateFromItems(init);
+  let toReplace = allItems[3];
+  let next = replaceExisting(state, actionCreators.replace(toReplace));
+  expect(next).toEqual(state);
+  testStateRefEq(state, next);
+};
+
 export const removeTest = remove => () => {
-  let allItems = randItems(3);
-  let state = stateFromItems(allItems);
+  let allItems = randItems();
+  let state = stateFromItems(allItems.slice(0, 3));
   let next = remove(state, actionCreators.remove(allItems[0].id));
-  expect(next).toEqual(stateFromItems(allItems.slice(1)));
+  expect(next).toEqual(stateFromItems(allItems.slice(1, 3)));
   testStateRefNe(state, next);
+
+  // Attempt to remove something that's not in the state, should be ignored
+  next = remove(state, actionCreators.remove(allItems[3].id));
+  expect(next).toEqual(state);
+  testStateRefEq(state, next);
 };
 
 export const removeAllTest = removeAll => () => {
@@ -257,90 +366,3 @@ export const removeAllTest = removeAll => () => {
   testStateRefNe(state, next);
   noDataTest(removeAll, ac);
 };
-
-// export const addUnsafeTest = (add, cb) => () => {
-//   let allItems = randItems(5);
-//   let state = stateFromItems(allItems);
-//   let toAdd = allItems[1];
-//   cb(() => add(state, toAdd), allItems, toAdd, state);
-// };
-//
-// export const addAllUnsafeTest = (addAll, cb) => () => {
-//   let allItems = randItems(5);
-//   let initItems = allItems.slice(0, 3);
-//   let state = stateFromItems(initItems);
-//   let toAdd = randItems(3).map((x, i) => ({ ...x, id: allItems[i + 1].id }));
-//   cb(() => addAll(state, toAdd), initItems, toAdd, state);
-// };
-//
-// export const createUnsafeTest = (create, cb) => () => {
-//   let all = randItems(5);
-//   let state = stateFromItems(all);
-//   let toCreate = all[2];
-//   cb(() => create(state, toCreate), all, toCreate, state);
-// };
-//
-// export const createAllUnsafeTest = (createAll, cb, creator) => () => {
-//   let allItems = randItems(5);
-//   let initItems = allItems.slice(0, 3);
-//   let state = stateFromItems(initItems);
-//   let toAdd = randItems(3).map((x, i) => ({ ...x, id: allItems[i + 1].id }));
-//   cb(() => createAll(state, toAdd, creator), initItems, toAdd, state);
-// };
-//
-// export const mergeUnsafeTest = (merge, cb) => () => {
-//   let all = randItems(5);
-//   let state = stateFromItems(all.slice(0, 3));
-//   let toMerge = all[4];
-//   cb(() => merge(state, toMerge), all.slice(0, 3), toMerge, state);
-// };
-//
-// export const mergeAllUnsafeTest = (mergeAll, cb, creator) => () => {
-//   let allItems = randItems(5);
-//   let initItems = allItems.slice(0, 3);
-//   let state = stateFromItems(initItems);
-//   let toMerge = randItems(3).map((x, i) => ({ ...x, id: allItems[i + 1].id }));
-//   cb(() => mergeAll(state, toMerge, creator), initItems, toMerge, state);
-// };
-//
-// export const replaceUnsafeTest = (replace, cb) => () => {
-//   let allItems = randItems(5);
-//   let state = stateFromItems(allItems);
-//   let toReplace = randNamedData();
-//   toReplace.id = randStringNot(allItems.map(x => x.id));
-//   cb(() => replace(state, toReplace), allItems, toReplace, state);
-// };
-//
-// export const replaceAllUnsafeTest = (replaceAll, cb) => () => {
-//   let allItems = randItems(5);
-//   let initItems = allItems.slice(0, 3);
-//   let state = stateFromItems(initItems);
-//   let toReplace = randItems(3).map((x, i) => ({
-//     ...x,
-//     id: allItems[i + 1].id
-//   }));
-//   cb(() => replaceAll(state, toReplace), initItems, toReplace, state);
-// };
-//
-// export const moveUnsafeTest = (move, cb) => () => {
-//   let allItems = randItems(3);
-//   let state = stateFromItems(allItems);
-//   let from = randStringNot(allItems.map(x => x.id));
-//   let to = randStringNot(allItems.map(x => x.id).concat([from]));
-//   cb(() => move(state, from, to), allItems, from, to, state);
-// };
-//
-// export const removeUnsafeTest = (remove, cb) => () => {
-//   let allItems = randItems(3);
-//   let state = stateFromItems(allItems);
-//   let toRemove = randStringNot(allItems.map(x => x.id));
-//   cb(() => remove(state, toRemove), allItems, toRemove, state);
-// };
-//
-// export const removeAllUnsafeTest = (removeAll, cb) => () => {
-//   let allItems = randItems(5);
-//   let initItems = allItems.slice(0, 3);
-//   let state = stateFromItems(initItems);
-//   let toRemove = allItems.slice(1, 4).map(x => x.id);
-//   cb(() => removeAll(state, toRemove), allItems, toRemove, state);
-// };
