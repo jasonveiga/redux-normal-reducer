@@ -13,7 +13,7 @@ import {
   randStringNot
 } from "./lib";
 
-import actions from "../actions";
+import { actions } from "..";
 
 let actionCreators = actions().creators;
 

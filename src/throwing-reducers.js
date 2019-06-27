@@ -12,8 +12,30 @@ import {
 
 import { filterKnownData, filterUnknownData } from "./util";
 
+/**
+ * General exception thrown if one of the reducer constraints is violated.
+ * A trivial extension of Error to enable catching.
+ * @example <caption>Try-catch with reducer</caption>
+ * let state = { allIds: ['x'], byId: { x: { id: 'x' } } }
+ * try {
+ *   addOrThrow(state, { data: { id: 'x' } })
+ * } catch (e) {
+ *   if (e instanceof ReducerError) {
+ *     console.error(e)
+ *   } else {
+ *     throw e
+ *   }
+ * }
+ */
 export class ReducerError extends Error {}
 
+/**
+ * Adds action.data to the state, or throws if item already exists
+ * @param {object} state
+ * @param {object} action action.data is an object
+ * @return {object} new state
+ * @throws {ReducerError} if item already exists
+ */
 export function addOrThrow(state, action) {
   if (state.byId.hasOwnProperty(action.data.id)) {
     throw new ReducerError(`can't add id ${action.data.id}: already exists`);
@@ -22,6 +44,13 @@ export function addOrThrow(state, action) {
   return add(state, action);
 }
 
+/**
+ * Adds items to the state, or throws if any item already exists
+ * @param {object} state
+ * @param {object} action action.data is an array
+ * @return {object} new state
+ * @throws {ReducerError} if item already exists
+ */
 export function addAllOrThrow(state, action) {
   let existing = filterKnownData(state, action.data).map(x => x.id);
 
@@ -34,6 +63,12 @@ export function addAllOrThrow(state, action) {
   return addAll(state, action);
 }
 
+/**
+ * Returns a reducer that creates action.data in the state, or throws
+ * if item already exists. May provide a custom creator function.
+ * @param {function} creator
+ * @return {function} reducer
+ */
 export function createOrThrowReducer(creator) {
   let create = createReducer(creator);
 
@@ -47,8 +82,23 @@ export function createOrThrowReducer(creator) {
   };
 }
 
+/**
+ * @function createOrThrow
+ * Adds action.data to the state, or throws if item already exists
+ * @see createOrThrowReducer
+ * @param {object} state
+ * @param {object} action action.data is an object
+ * @return {object} new state
+ * @throws {ReducerError} if item already exists
+ */
 export const createOrThrow = createOrThrowReducer();
 
+/**
+ * Returns a reducer that creates all items action.data in the state, or throws
+ * if any already exists. May provide a custom creator function.
+ * @param {function} creator
+ * @return {function} reducer
+ */
 export function createAllOrThrowReducer(creator) {
   let createAll = createAllReducer(creator);
 
@@ -65,8 +115,26 @@ export function createAllOrThrowReducer(creator) {
   };
 }
 
+/**
+ * @function createAllOrThrow
+ * Adds action.data (array) to the state, or throws if item already exists. Returns
+ * same state if action.data is empty.
+ * @see createAllOrThrowReducer
+ * @param {object} state
+ * @param {object} action action.data is an object
+ * @return {object} new state
+ * @throws {ReducerError} if any item already exists
+ */
 export const createAllOrThrow = createAllOrThrowReducer();
 
+/**
+ * Produces a merge reducer, that utilizes a custom function for merging data
+ * (see {@link mergeReducer}). If any item to be merged doesn't exist, it throws
+ * a {@link ReducerError}.
+ * @summary produces a merge reducer with custom merge function
+ * @param {function} merger function with signature merge(existing, update)
+ * @return {function} reducer
+ */
 export function mergeOrThrowReducer(merger) {
   let merge = mergeReducer(merger);
 
@@ -79,8 +147,24 @@ export function mergeOrThrowReducer(merger) {
   };
 }
 
+/**
+ * @function mergeOrThrow
+ * Merges action.data (object) to the state, or throws if item doesn't exist
+ * @see mergeOrThrowReducer
+ * @param {object} state
+ * @param {object} action action.data is an object
+ * @return {object} new state
+ * @throws {ReducerError} if item doesn't exist
+ */
 export const mergeOrThrow = mergeOrThrowReducer();
 
+/**
+ * Produces an mergeAll reducer, which may use a custom merge function.
+ * The reducer throws if any item being merged doesn't exist.
+ * @summary produces reducer for merging many items, w/custom merge function
+ * @param {function} merger function with signature merge(existing, update)
+ * @return {function} reducer
+ */
 export function mergeAllOrThrowReducer(merger) {
   let mergeAll = mergeAllReducer(merger);
 
@@ -97,8 +181,25 @@ export function mergeAllOrThrowReducer(merger) {
   };
 }
 
+/**
+ * @function mergeAllOrThrow
+ * Merges items in action.data (array) to the state, or throws if any item doesn't
+ * exist
+ * @see mergeAllOrThrowReducer
+ * @param {object} state
+ * @param {object} action action.data is an array
+ * @return {object} new state
+ * @throws {ReducerError} if any item doesn't exist
+ */
 export const mergeAllOrThrow = mergeAllOrThrowReducer();
 
+/**
+ * Replaces action.data (object) in the state, or throws if item doesn't exist
+ * @param {object} state
+ * @param {object} action action.data is an object
+ * @return {object} new state
+ * @throws {ReducerError} if item doesn't exist
+ */
 export function replaceOrThrow(state, action) {
   if (!state.byId.hasOwnProperty(action.data.id)) {
     throw new ReducerError(`can't replace id ${action.data.id}: not found`);
@@ -107,6 +208,14 @@ export function replaceOrThrow(state, action) {
   return replace(state, action);
 }
 
+/**
+ * Replaces items in action.data (array) to the state, or throws if any item doesn't
+ * exist
+ * @param {object} state
+ * @param {object} action action.data is an array
+ * @return {object} new state
+ * @throws {ReducerError} if any item doesn't exist
+ */
 export function replaceAllOrThrow(state, action) {
   let notExisting = filterUnknownData(state, action.data).map(x => x.id);
 
@@ -119,6 +228,15 @@ export function replaceAllOrThrow(state, action) {
   return replaceAll(state, action);
 }
 
+/**
+ * Move an item. Throws if the source doesn't exist, or the destination already exists.
+ * @summary move an exsiting item in the state
+ * @see move
+ * @param {object} state
+ * @param {object} action
+ * @return {object} new state
+ * @throws {ReducerError} if any item doesn't exist
+ */
 export function moveOrThrow(state, action) {
   let { from, to } = action;
 

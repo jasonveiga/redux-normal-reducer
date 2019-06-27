@@ -32,6 +32,7 @@ import {
 } from "./reducers";
 
 import {
+  ReducerError,
   addAllOrThrow,
   addOrThrow,
   createAllOrThrow,
@@ -59,9 +60,57 @@ import {
   filterIds
 } from "./util";
 
+import {
+  ADD,
+  ADD_ALL,
+  ADD_ALL_IF_NEW,
+  ADD_IF_NEW,
+  ADD_OR_MERGE,
+  ADD_OR_MERGE_ALL,
+  ADD_OR_REPLACE,
+  ADD_OR_REPLACE_ALL,
+  CREATE,
+  CREATE_ALL,
+  CREATE_ALL_IF_NEW,
+  CREATE_IF_NEW,
+  MERGE,
+  MERGE_ALL,
+  MOVE,
+  REMOVE,
+  REMOVE_ALL,
+  REPLACE,
+  REPLACE_ALL,
+  REPLACE_ALL_EXISTING,
+  REPLACE_EXISTING,
+  actions
+} from "./actions";
+
 import { reducer, throwingReducer } from "./factories";
 
 export {
+  ADD,
+  ADD_ALL,
+  ADD_ALL_IF_NEW,
+  ADD_IF_NEW,
+  ADD_OR_MERGE,
+  ADD_OR_MERGE_ALL,
+  ADD_OR_REPLACE,
+  ADD_OR_REPLACE_ALL,
+  CREATE,
+  CREATE_ALL,
+  CREATE_ALL_IF_NEW,
+  CREATE_IF_NEW,
+  MERGE,
+  MERGE_ALL,
+  MOVE,
+  REMOVE,
+  REMOVE_ALL,
+  REPLACE,
+  REPLACE_ALL,
+  REPLACE_ALL_EXISTING,
+  REPLACE_EXISTING,
+  ReducerError,
+  actions,
   add,
   addAll,
   addAllIfNew,

@@ -1,10 +1,5 @@
-import actions, {
-  ALL_ACTION_TYPES,
-  DATA_ACTION_TYPES,
-  MOVE,
-  REMOVE,
-  REMOVE_ALL
-} from "../actions";
+import { MOVE, REMOVE, REMOVE_ALL, actions } from "..";
+import { ALL_ACTION_TYPES, DATA_ACTION_TYPES } from "../actions";
 import { underToCamel } from "../util";
 import { randItems } from "./lib";
 

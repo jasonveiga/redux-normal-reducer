@@ -19,9 +19,9 @@ const actionFilterKnown = (state, action) => ({
  * Adds an item to the state. Item must contain an id key. Adding an
  * item that already exists in the state will produce undefined results.
  * @summary adds action.data to the state
- * @param {Object} state
- * @param {Object} action
- * @return {Object} new state
+ * @param {NormalizedState} state
+ * @param {DataAction} action
+ * @return {NormalizedState} new state
  */
 export function add(state, { data }) {
   return {
@@ -36,9 +36,9 @@ export function add(state, { data }) {
  * Adding items that already exist in the state will produce undefined results.
  * If data is empty [], the same state is returned.
  * @summary adds multiple items to the state
- * @param {Object} state
- * @param {Object} action
- * @return {Object} new state
+ * @param {NormalizedState} state
+ * @param {ArrayAction} action
+ * @return {NormalizedState} new state
  */
 export function addAll(state, { data }) {
   return data.length
@@ -82,9 +82,9 @@ export function addOrMergeReducer(merger = shallowMerge) {
  * @function addOrMerge
  * Default addOrMerge reducer
  * @see addOrMergeReducer
- * @param {Object} state
- * @param {Object} action
- * @return {Object} new state
+ * @param {NormalizedState} state
+ * @param {DataAction} action
+ * @return {NormalizedState} new state
  */
 export const addOrMerge = addOrMergeReducer();
 
@@ -118,18 +118,18 @@ export function addOrMergeAllReducer(merger = shallowMerge) {
  * @function addOrMergeAll
  * Default addOrMergeAll reducer
  * @see addOrMergeAllReducer
- * @param {Object} state
- * @param {Object} action
- * @return {Object} new state
+ * @param {NormalizedState} state
+ * @param {ArrayAction} action
+ * @return {NormalizedState} new state
  */
 export const addOrMergeAll = addOrMergeAllReducer();
 
 /**
  * If action.data.id exists in the state, it's replaced. If it doesn't, it's added.
  * @summary add or replace action.data in the state
- * @param {Object} state
- * @param {Object} action
- * @return {Object} new state
+ * @param {NormalizedState} state
+ * @param {DataAction} action
+ * @return {NormalizedState} new state
  */
 export function addOrReplace(state, action) {
   return state.byId.hasOwnProperty(action.data.id)
@@ -142,9 +142,9 @@ export function addOrReplace(state, action) {
  * if its id exists in the state, it's replaced. If it doesn't, it's added.
  * If data is empty [], the same state is returned.
  * @summary add/replace multiple items
- * @param {Object} state
- * @param {Object} action
- * @return {Object} new state
+ * @param {NormalizedState} state
+ * @param {ArraAction} action
+ * @return {NormalizedState} new state
  */
 export function addOrReplaceAll(state, { data }) {
   if (!data.length) {
@@ -172,14 +172,15 @@ export function addOrReplaceAll(state, { data }) {
  * Generates a reducer for creating a new item and adding it to the state,
  * using a custom function for creating the item. The default function simply
  * accepts and returns the item as-is. However, a custom function could be used,
- * e.g. to provide default values for the created item. Example, which makes sure
- * each created item has the key a set to 'foo' by default if one isn't provided:
- *
- * data => { a: 'foo', ...data }
- *
+ * e.g. to provide default values for the created item.
  * The resulting reducer accepts a state and an action, where action.data contains
  * the item to be created. action.data.id must be defined. If the id already exists
  * in the state, the result is undefined.
+ *
+ * @example <caption>Custom creator method</caption>
+ * // Each created item has the key a set to 'foo'
+ * // by default if one isn't provided:
+ * const create = createReducer(data => ({ a: 'foo', ...data }))
  * @summary create reducer with custom create function
  * @param {function} creator
  * @return {function} create reducer
@@ -194,9 +195,9 @@ export function createReducer(creator = defaultCreator) {
  * @function create
  * Default create reducer
  * @see createReducer
- * @param {Object} state
- * @param {Object} action
- * @return {Object} new state
+ * @param {NormalizedState} state
+ * @param {DataAction} action
+ * @return {NormalizedState} new state
  */
 export const create = createReducer();
 
@@ -236,9 +237,9 @@ export function createAllReducer(creator = defaultCreator) {
  * @function createAll
  * Default createAll reducer
  * @see createAllReducer
- * @param {Object} state
- * @param {Object} action
- * @return {Object} new state
+ * @param {NormalizedState} state
+ * @param {ArrayAction} action
+ * @return {NormalizedState} new state
  */
 export const createAll = createAllReducer();
 
@@ -261,9 +262,9 @@ export function mergeReducer(merger = shallowMerge) {
  * @function merge
  * Default merge reducer
  * @see mergeReducer
- * @param {Object} state
- * @param {Object} action
- * @return {Object} new state
+ * @param {NormalizedState} state
+ * @param {DataAction} action
+ * @return {NormalizedState} new state
  */
 export const merge = mergeReducer();
 
@@ -291,9 +292,9 @@ export function mergeAllReducer(merger = shallowMerge) {
  * @function mergerAll
  * Default merge all reducer
  * @see mergeAllReducer
- * @param {Object} state
- * @param {Object} action
- * @return {Object} new state
+ * @param {NormalizedState} state
+ * @param {ArrayAction} action
+ * @return {NormalizedState} new state
  */
 export const mergeAll = mergeAllReducer();
 
@@ -302,9 +303,9 @@ export const mergeAll = mergeAllReducer();
  * If from doesn't exist, or if to already exists, than the results are undefined.
  * @summary move an exsiting item in the state
  * @see moveSafe
- * @param {object} state
- * @param {object} action
- * @return {object} new state
+ * @param {NormalizedState} state
+ * @param {MoveAction} action
+ * @return {NormalizedState} new state
  */
 export function move(state, { from, to }) {
   let allIds = state.allIds.filter(i => i !== from).concat([to]);
@@ -319,9 +320,9 @@ export function move(state, { from, to }) {
  * state. If it doesn't exist, the results will be undefined.
  * @summary replace an item in the state
  * @see addOrReplace
- * @param {object} state
- * @param {object} action
- * @return {object} new state
+ * @param {NormalizedState} state
+ * @param {DataAction} action
+ * @return {NormalizedState} new state
  */
 export function replace(state, { data }) {
   return { ...state, byId: { ...state.byId, [data.id]: data } };
@@ -333,9 +334,9 @@ export function replace(state, { data }) {
  * empty [], then the same state is returned.
  * @summary replace many items in the state
  * @see addOrReplace
- * @param {object} state
- * @param {object} action
- * @return {object} new state
+ * @param {NormalizedState} state
+ * @param {ArrayAction} action
+ * @return {NormalizedState} new state
  */
 export function replaceAll(state, { data }) {
   return data.length
@@ -356,9 +357,9 @@ export function replaceAll(state, { data }) {
  * Remove an item, identified by action.id. If the item doesn't exist in the state,
  * the same state is returned.
  * @summary remove an item from the state
- * @param {object} state
- * @param {object} action
- * @return {object} new state
+ * @param {NormalizedState} state
+ * @param {RemoveAction} action
+ * @return {NormalizedState} new state
  */
 export function remove(state, { id }) {
   return state.byId.hasOwnProperty(id)
@@ -373,9 +374,9 @@ export function remove(state, { id }) {
  * Remove several items, whose IDs are in the array action.ids. If none of the items
  * exist in the state, or if action.ids is an empty array, the same state is returned.
  * @summary remove many items from the state
- * @param {object} state
- * @param {object} action
- * @return {object} new state
+ * @param {NormalizedState} state
+ * @param {RemoveAllAction} action
+ * @return {NormalizedState} new state
  */
 export function removeAll(state, { ids }) {
   if (!ids.length) {
@@ -400,9 +401,9 @@ export function removeAll(state, { ids }) {
 /**
  * Add an item iff it doesn't already exist in the state (a safe version of {@link add})
  * @summary add an item to the state if it's new
- * @param {object} state
- * @param {object} action
- * @return {object} new state
+ * @param {NormalizedState} state
+ * @param {DataAction} action
+ * @return {NormalizedState} new state
  */
 export function addIfNew(state, action) {
   return state.byId.hasOwnProperty(action.data.id) ? state : add(state, action);
@@ -412,9 +413,9 @@ export function addIfNew(state, action) {
  * Add items (action.data) that don't already exist in the state (a safe version of
  * {@link addAll})
  * @summary add new items to the state
- * @param {object} state
- * @param {object} action
- * @return {object} new state
+ * @param {NormalizedState} state
+ * @param {ArrayAction} action
+ * @return {NormalizedState} new state
  */
 export function addAllIfNew(state, action) {
   return addAll(state, actionFilterUnknown(state, action));
@@ -442,9 +443,9 @@ export function createIfNewReducer(creator = defaultCreator) {
 /**
  * @function createIfNew
  * Default reducer created by {@link createIfNewReducer}
- * @param {object} state
- * @param {object} action
- * @return {object} new state
+ * @param {NormalizedState} state
+ * @param {DataAction} action
+ * @return {NormalizedState} new state
  */
 export const createIfNew = createIfNewReducer();
 
@@ -469,9 +470,9 @@ export function createAllIfNewReducer(creator = defaultCreator) {
 /**
  * @function createAllIfNew
  * Default reducer created by {@link createAllIfNewReducer}
- * @param {object} state
- * @param {object} action
- * @return {object} new state
+ * @param {NormalizedState} state
+ * @param {ArrayAction} action
+ * @return {NormalizedState} new state
  */
 export const createAllIfNew = createAllIfNewReducer();
 
@@ -479,9 +480,9 @@ export const createAllIfNew = createAllIfNewReducer();
  * Replaces an item in the state iff it already exists. Returns the same state
  * otherwise. This is the safe version of {@link replace}
  * @summary replaces existing items in the state
- * @param {object} state
- * @param {object} action
- * @return {object} new state
+ * @param {NormalizedState} state
+ * @param {DataAction} action
+ * @return {NormalizedState} new state
  */
 export function replaceExisting(state, action) {
   return state.byId.hasOwnProperty(action.data.id)
@@ -494,9 +495,9 @@ export function replaceExisting(state, action) {
  * if action.data is an empty array or if none of the items exist.
  * This is the safe version of {@link replaceAll}
  * @summary replace many existing items in the state
- * @param {object} state
- * @param {object} action
- * @return {object} new state
+ * @param {NormalizedState} state
+ * @param {ArrayAction} action
+ * @return {NormalizedState} new state
  */
 export function replaceAllExisting(state, action) {
   return replaceAll(state, actionFilterKnown(state, action));
@@ -507,9 +508,9 @@ export function replaceAllExisting(state, action) {
  * iff action.from exists in the state and action.to doesn't exist in the
  * state. Returns the same state otherwise.
  * @summary moves an item in the state, with guard conditions
- * @param {object} state
- * @param {object} action
- * @return {object} new state
+ * @param {NormalizedState} state
+ * @param {MoveAction} action
+ * @return {NormalizedState} new state
  */
 export function moveSafe(state, action) {
   return state.byId.hasOwnProperty(action.from) &&

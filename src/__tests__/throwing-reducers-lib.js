@@ -1,5 +1,4 @@
-import { ReducerError } from "../throwing-reducers";
-import actions from "../actions";
+import { actions, ReducerError } from "..";
 import { randItems, stateFromItems } from "./lib";
 
 let actionCreators = actions().creators;
