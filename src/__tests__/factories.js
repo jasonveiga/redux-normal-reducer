@@ -2,10 +2,10 @@ import {
   createAllReducer,
   createReducer,
   mergeAllReducer,
-  mergeReducer
-} from "../reducers";
-
-import { reducer, throwingReducer } from "../factories";
+  mergeReducer,
+  reducer,
+  throwingReducer
+} from "..";
 
 import {
   addAllTest,

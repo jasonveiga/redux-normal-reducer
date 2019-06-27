@@ -27,7 +27,7 @@ import {
   replaceAll,
   replaceAllExisting,
   replaceExisting
-} from "../reducers";
+} from "..";
 
 import {
   addAllTest,

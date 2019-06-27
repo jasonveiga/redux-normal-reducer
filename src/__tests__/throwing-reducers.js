@@ -12,7 +12,7 @@ import {
   moveOrThrow,
   replaceAllOrThrow,
   replaceOrThrow
-} from "../throwing-reducers";
+} from "..";
 
 import {
   addAllOrThrowTest,
