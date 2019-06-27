@@ -31,9 +31,9 @@ export class ReducerError extends Error {}
 
 /**
  * Adds action.data to the state, or throws if item already exists
- * @param {object} state
- * @param {object} action action.data is an object
- * @return {object} new state
+ * @param {NormalizedState} state
+ * @param {DataAction} action
+ * @return {NormalizedState} new state
  * @throws {ReducerError} if item already exists
  */
 export function addOrThrow(state, action) {
@@ -46,9 +46,9 @@ export function addOrThrow(state, action) {
 
 /**
  * Adds items to the state, or throws if any item already exists
- * @param {object} state
- * @param {object} action action.data is an array
- * @return {object} new state
+ * @param {NormalizedState} state
+ * @param {ArrayAction} action
+ * @return {NormalizedState} new state
  * @throws {ReducerError} if item already exists
  */
 export function addAllOrThrow(state, action) {
@@ -86,9 +86,9 @@ export function createOrThrowReducer(creator) {
  * @function createOrThrow
  * Adds action.data to the state, or throws if item already exists
  * @see createOrThrowReducer
- * @param {object} state
- * @param {object} action action.data is an object
- * @return {object} new state
+ * @param {NormalizedState} state
+ * @param {DataAction} action
+ * @return {NormalizedState} new state
  * @throws {ReducerError} if item already exists
  */
 export const createOrThrow = createOrThrowReducer();
@@ -120,9 +120,9 @@ export function createAllOrThrowReducer(creator) {
  * Adds action.data (array) to the state, or throws if item already exists. Returns
  * same state if action.data is empty.
  * @see createAllOrThrowReducer
- * @param {object} state
- * @param {object} action action.data is an object
- * @return {object} new state
+ * @param {NormalizedState} state
+ * @param {ArrayAction} action
+ * @return {NormalizedState} new state
  * @throws {ReducerError} if any item already exists
  */
 export const createAllOrThrow = createAllOrThrowReducer();
@@ -151,9 +151,9 @@ export function mergeOrThrowReducer(merger) {
  * @function mergeOrThrow
  * Merges action.data (object) to the state, or throws if item doesn't exist
  * @see mergeOrThrowReducer
- * @param {object} state
- * @param {object} action action.data is an object
- * @return {object} new state
+ * @param {NormalizedState} state
+ * @param {DataAction} action
+ * @return {NormalizedState} new state
  * @throws {ReducerError} if item doesn't exist
  */
 export const mergeOrThrow = mergeOrThrowReducer();
@@ -186,18 +186,18 @@ export function mergeAllOrThrowReducer(merger) {
  * Merges items in action.data (array) to the state, or throws if any item doesn't
  * exist
  * @see mergeAllOrThrowReducer
- * @param {object} state
- * @param {object} action action.data is an array
- * @return {object} new state
+ * @param {NormalizedState} state
+ * @param {ArrayAction} action
+ * @return {NormalizedState} new state
  * @throws {ReducerError} if any item doesn't exist
  */
 export const mergeAllOrThrow = mergeAllOrThrowReducer();
 
 /**
  * Replaces action.data (object) in the state, or throws if item doesn't exist
- * @param {object} state
- * @param {object} action action.data is an object
- * @return {object} new state
+ * @param {NormalizedState} state
+ * @param {DataAction} action
+ * @return {NormalizedState} new state
  * @throws {ReducerError} if item doesn't exist
  */
 export function replaceOrThrow(state, action) {
@@ -211,9 +211,9 @@ export function replaceOrThrow(state, action) {
 /**
  * Replaces items in action.data (array) to the state, or throws if any item doesn't
  * exist
- * @param {object} state
- * @param {object} action action.data is an array
- * @return {object} new state
+ * @param {NormalizedState} state
+ * @param {ArrayAction} action
+ * @return {NormalizedState} new state
  * @throws {ReducerError} if any item doesn't exist
  */
 export function replaceAllOrThrow(state, action) {
@@ -232,9 +232,9 @@ export function replaceAllOrThrow(state, action) {
  * Move an item. Throws if the source doesn't exist, or the destination already exists.
  * @summary move an exsiting item in the state
  * @see move
- * @param {object} state
- * @param {object} action
- * @return {object} new state
+ * @param {NormalizedState} state
+ * @param {MoveAction} action
+ * @return {NormalizedState} new state
  * @throws {ReducerError} if any item doesn't exist
  */
 export function moveOrThrow(state, action) {
