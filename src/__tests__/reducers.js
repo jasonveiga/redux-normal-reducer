@@ -4,7 +4,9 @@ import {
   addAllIfNew,
   addIfNew,
   addOrMerge,
+  addOrMergeReducer,
   addOrMergeAll,
+  addOrMergeAllReducer,
   addOrReplace,
   addOrReplaceAll,
   create,
@@ -66,7 +68,9 @@ describe("test normal reducers", () => {
   test("add if new (new)", addTest(addIfNew));
   test("add if new (not new)", addIfNewTest(addIfNew));
   test("add/merge", addOrMergeTest(addOrMerge));
+  test("add/merge (custom)", mergeCustomTest(addOrMergeReducer));
   test("add/merge all", addOrMergeAllTest(addOrMergeAll));
+  test("add/merge all (custom)", mergeAllCustomTest(addOrMergeAllReducer));
   test("add/replace", addOrReplaceTest(addOrReplace));
   test("add/replace all", addOrReplaceAllTest(addOrReplaceAll));
   test("create", createTest(create));

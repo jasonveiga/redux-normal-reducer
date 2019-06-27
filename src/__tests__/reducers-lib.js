@@ -358,11 +358,14 @@ export const removeTest = remove => () => {
 };
 
 export const removeAllTest = removeAll => () => {
-  let allItems = randItems(3);
-  let state = stateFromItems(allItems);
+  let allItems = randItems(5);
+  let state = stateFromItems(allItems.slice(0, 3));
   let ac = actionCreators.removeAll;
   let next = removeAll(state, ac([allItems[0].id, allItems[2].id]));
   expect(next).toEqual(stateFromItems([allItems[1]]));
   testStateRefNe(state, next);
   noDataTest(removeAll, ac);
+  next = removeAll(state, ac([allItems[3].id, allItems[4].id]));
+  expect(next).toEqual(state);
+  testStateRefEq(state, next);
 };

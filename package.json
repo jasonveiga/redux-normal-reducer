@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest",
     "build": "babel src -d dist --ignore src/__tests__",
-    "start": "jest --watchAll"
+    "start": "jest --watchAll",
+    "jsdoc": "jsdoc src -d jsdoc"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +22,7 @@
     "eslint-plugin-jest": "^22.6.4",
     "eslint-plugin-prettier": "^3.1.0",
     "jest": "^24.8.0",
+    "jsdoc": "^3.6.2",
     "prettier": "1.18.2"
   },
   "prettier": {
