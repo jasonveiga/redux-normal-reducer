@@ -39,3 +39,12 @@ export function deleteKey(obj, k) {
     return obj;
   }
 }
+
+export const capitalize = x => x.charAt(0).toLocaleUpperCase() + x.slice(1);
+
+export const underToCamel = x =>
+  x
+    .split("_")
+    .map(y => y.toLocaleLowerCase())
+    .map((y, i) => (i > 0 ? capitalize(y) : y))
+    .join("");

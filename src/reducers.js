@@ -1,13 +1,21 @@
 import { defaultCreator, shallowMerge } from "./defaults";
 import { filterKnownData, filterUnknownData, deleteKey } from "./util";
 
-export const add = (state, data) => ({
+const actionFilterUnknown = (state, action) => ({
+  data: action.data.filter(x => !state.byId.hasOwnProperty(x.id))
+});
+
+const actionFilterKnown = (state, action) => ({
+  data: action.data.filter(x => state.byId.hasOwnProperty(x.id))
+});
+
+export const add = (state, { data }) => ({
   ...state,
   allIds: [...state.allIds, data.id],
   byId: { ...state.byId, [data.id]: data }
 });
 
-export const addAll = (state, data) =>
+export const addAll = (state, { data }) =>
   data.length
     ? {
         ...state,
@@ -22,22 +30,31 @@ export const addAll = (state, data) =>
       }
     : state;
 
-export const addOrMerge = (state, data, merger = shallowMerge) =>
-  state.byId.hasOwnProperty(data.id)
-    ? merge(state, data, merger)
-    : add(state, data);
+export const addOrMergeReducer = (merger = shallowMerge) => (state, action) =>
+  state.byId.hasOwnProperty(action.data.id)
+    ? merge(state, action, merger)
+    : add(state, action);
 
-export const addOrMergeAll = (state, data, merger = shallowMerge) =>
+export const addOrMerge = addOrMergeReducer();
+
+export const addOrMergeAllReducer = (merger = shallowMerge) => (
+  state,
+  action
+) =>
   mergeAll(
-    addAll(state, filterUnknownData(state, data)),
-    filterKnownData(state, data),
+    addAll(state, actionFilterUnknown(state, action)),
+    actionFilterKnown(state, action),
     merger
   );
 
-export const addOrReplace = (state, data) =>
-  state.byId.hasOwnProperty(data.id) ? replace(state, data) : add(state, data);
+export const addOrMergeAll = addOrMergeAllReducer();
 
-export function addOrReplaceAll(state, data) {
+export const addOrReplace = (state, action) =>
+  state.byId.hasOwnProperty(action.data.id)
+    ? replace(state, action)
+    : add(state, action);
+
+export function addOrReplaceAll(state, { data }) {
   if (!data.length) {
     return state;
   }
@@ -59,10 +76,15 @@ export function addOrReplaceAll(state, data) {
   };
 }
 
-export const create = (state, data, creator = defaultCreator) =>
-  add(state, creator(data));
+export const createReducer = (creator = defaultCreator) => (state, { data }) =>
+  add(state, { data: creator(data) });
 
-export function createAll(state, data, creator = defaultCreator) {
+export const create = createReducer();
+
+export const createAllReducer = (creator = defaultCreator) => (
+  state,
+  { data }
+) => {
   if (!data.length) {
     return state;
   }
@@ -79,15 +101,21 @@ export function createAll(state, data, creator = defaultCreator) {
       { ...state.byId }
     )
   };
-}
+};
 
-export const merge = (state, data, merger = shallowMerge) =>
-  replace(state, merger(state.byId[data.id], data));
+export const createAll = createAllReducer();
 
-export const mergeAll = (state, data, merger = shallowMerge) =>
-  replaceAll(state, data.map(x => merger(state.byId[x.id], x)));
+export const mergeReducer = (merger = shallowMerge) => (state, { data }) =>
+  replace(state, { data: merger(state.byId[data.id], data) });
 
-export function move(state, from, to) {
+export const merge = mergeReducer();
+
+export const mergeAllReducer = (merger = shallowMerge) => (state, { data }) =>
+  replaceAll(state, { data: data.map(x => merger(state.byId[x.id], x)) });
+
+export const mergeAll = mergeAllReducer();
+
+export function move(state, { from, to }) {
   let allIds = state.allIds.filter(i => i !== from).concat([to]);
   let byId = { ...state.byId };
   byId[to] = { ...byId[from], id: to };
@@ -95,12 +123,12 @@ export function move(state, from, to) {
   return { ...state, allIds, byId };
 }
 
-export const replace = (state, data) => ({
+export const replace = (state, { data }) => ({
   ...state,
   byId: { ...state.byId, [data.id]: data }
 });
 
-export const replaceAll = (state, data) =>
+export const replaceAll = (state, { data }) =>
   data.length
     ? {
         ...state,
@@ -114,7 +142,7 @@ export const replaceAll = (state, data) =>
       }
     : state;
 
-export const remove = (state, id) =>
+export const remove = (state, { id }) =>
   state.byId.hasOwnProperty(id)
     ? {
         allIds: state.allIds.filter(i => i !== id),
@@ -122,7 +150,7 @@ export const remove = (state, id) =>
       }
     : state;
 
-export function removeAll(state, ids) {
+export function removeAll(state, { ids }) {
   ids = new Set(ids);
   let allIds = state.allIds.filter(i => !ids.has(i));
 
@@ -137,3 +165,29 @@ export function removeAll(state, ids) {
 
   return { ...state, allIds, byId };
 }
+
+export const addIfNew = (state, data) =>
+  state.byId.hasOwnProperty(data.id) ? state : add(state, data);
+
+export const addAllIfNew = (state, data) =>
+  addAll(state, filterUnknownData(state, data));
+
+export const createIfNew = (state, data, creator = defaultCreator) =>
+  state.byId.hasOwnProperty(data.id) ? state : create(state, data, creator);
+
+export const createAllIfNew = (state, data, creator = defaultCreator) =>
+  createAll(state, filterUnknownData(state, data), creator);
+
+export const replaceExisting = (state, data) =>
+  state.byId.hasOwnProperty(data.id) ? replace(state, data) : add(state, data);
+
+export const replaceAllExisting = (state, data) =>
+  replaceAll(
+    addAll(state, filterUnknownData(state, data)),
+    filterKnownData(state, data)
+  );
+
+export const moveSafe = (state, from, to) =>
+  state.byId.hasOwnProperty(from) && !state.byId.hasOwnProperty(to)
+    ? move(state, from, to)
+    : state;
