@@ -80,7 +80,7 @@ examples:
 
 // Remove many action, contains several IDs
 {
-    type: "REMOVE",
+    type: "REMOVE_ALL",
     ids: ["foo", "bar"]
 }
 
@@ -261,3 +261,18 @@ const mergeAll = mergeAllReducer(merger)
 * `createReducer`
 * `mergeAllReducer`
 * `mergeReducer`
+
+# Utility Functions
+
+Several utility functions are provided for working with a normalized state:
+
+* `filterKnownData(state, data)`: returns items which already exist in the state
+* `filterUnknownData(state, data)`: returns items which don't already exist in the state
+* `toArray(state)`: Converts normalized state to any array of items
+* `map(state, fn)`: Maps a function onto the result of `toArray`
+* `sort(state, fn)`: Sort the result of `toArray` using `fn`
+* `forEach(state, fn)`: Calls `toArray(state).forEach(fn)`
+* `filter(state, fn)`: Filters the result of `toArray` using `fn`
+* `exists(state, id)`: Checks whether `id` is found in `state`
+* `allExist(state, ids)`: Checks whether all `ids` are found in `state`
+* `anyExist(state, ids)`: Checks whether any `ids` are found in `state`

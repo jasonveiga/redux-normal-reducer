@@ -8,9 +8,10 @@ import {
   filter,
   exists,
   allExist,
-  anyExist,
-  deleteKey
-} from "../util";
+  anyExist
+} from "..";
+
+import { deleteKey } from "../util";
 
 import {
   randItems,
