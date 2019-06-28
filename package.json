@@ -1,6 +1,6 @@
 {
   "name": "redux-normal-reducer",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -11,10 +11,12 @@
   },
   "keywords": [],
   "author": "",
+  "repository": "github:jasonveiga/redux-normal-reducer",
   "license": "ISC",
   "devDependencies": {
     "@babel/cli": "^7.4.4",
     "@babel/core": "^7.4.5",
+    "@babel/plugin-transform-modules-commonjs": "^7.4.4",
     "@babel/preset-env": "^7.4.5",
     "babel-eslint": "^10.0.1",
     "esdoc": "^1.1.0",
