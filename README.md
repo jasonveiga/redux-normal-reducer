@@ -135,9 +135,12 @@ export const sortUser = (key, direction) =>
 Use the `reducer` and `throwingReducer` methods to create Redux reducers that handle
 all of the basic action types. `throwingReducer` is a customized version of `reducer`,
 with the unsafe reducers replaced with throwing reducers. Since they raise exceptions,
-they should be used with care in production applications, since an uncaught exception can terminate the application.
+they should be used with care in production applications, since an uncaught exception 
+can terminate the application.
 
-Each factory accepts a configuration that may (optionally) contain an action type prefix, a suffx, and a customized mapping for any action types where you wish to customize the reducer. The resulting reducer can be used with redux, e.g. using
+Each factory accepts a configuration that may (optionally) contain an action type 
+prefix, a suffx, and a customized mapping for any action types where you wish to 
+customize the reducer. The resulting reducer can be used with redux, e.g. using
 `combineReducers`.
 
 ```javascript
@@ -157,6 +160,11 @@ const users = reducer({
     prefix: 'USERS_',
     customReducers: {
         USERS_MERGE: mergeReducer(merger)
+    },
+    defaultState: {
+        allIds: [],
+        byId: {},
+        otherState: 1
     }
 })
 

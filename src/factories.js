@@ -77,11 +77,13 @@ import {
  * @param {string} config.suffix suffix for action types, e.g. "_MY", "_USER"
  * @param {string} config.customReducers mapping of custom reducers to action types,
  *     will override the defaults reducer
+ * @param {NormalizedState} config.defaultState default state object to use
  */
 export function reducer({
   prefix = "",
   suffix = "",
-  customReducers = {}
+  customReducers = {},
+  defaultState = { allIds: [], byId: {} }
 } = {}) {
   let mapping = ALL_ACTION_TYPES.reduce((mapping, type) => {
     mapping[prefix + type + suffix] = actionReducers[type];
@@ -90,7 +92,7 @@ export function reducer({
 
   mapping = { ...mapping, ...customReducers };
 
-  return (state, action) =>
+  return (state = defaultState, action) =>
     mapping.hasOwnProperty(action.type)
       ? mapping[action.type](state, action)
       : state;
@@ -105,11 +107,13 @@ export function reducer({
  * @param {string} config.suffix suffix for action types, e.g. "_MY", "_USER"
  * @param {string} config.customReducers mapping of custom reducers to action types,
  *     will override the defaults reducer
+ * @param {NormalizedState} config.defaultState default state object to use
  */
 export function throwingReducer({
   prefix = "",
   suffix = "",
-  customReducers = {}
+  customReducers = {},
+  defaultState = { allIds: [], byId: {} }
 } = {}) {
   customReducers = {
     [prefix + ADD + suffix]: addOrThrow,
@@ -124,5 +128,5 @@ export function throwingReducer({
     ...customReducers
   };
 
-  return reducer({ prefix, suffix, customReducers });
+  return reducer({ prefix, suffix, customReducers, defaultState });
 }
