@@ -126,8 +126,8 @@ export const { userAdd, userRemove, userMerge } = mapping.creators
 
 // Feel free to define your own actions...
 export const SORT_USER = 'SORT_USER'
-export const sortUser = (key, direction)
-  => ({ type: SORT_USER, key, direction })
+export const sortUser = (key, direction) =>
+    ({ type: SORT_USER, key, direction })
 ```
 
 # High-Level Reducer Factories
@@ -150,7 +150,7 @@ const users = reducer()
 const merger = ( existing, update ) => ({ 
     ...existing, 
     ...update, 
-    updatedOn: new Date().toISOSTring()
+    updatedOn: new Date().toISOString()
 })
 
 const users = reducer({
@@ -200,7 +200,7 @@ that's in `byId`).
 
 These reducers provide options for handling data, e.g. they'll create data if it
 doesn't exist or ignore it if it already does. They're "safe" in the sense that they
-won't result in inconsistent `allIds` and `byIds`.
+won't result in inconsistent `allIds` and `byId`.
 
 * `addIfNew` (data action): adds an item iff it doesn't already exist
 * `addAllIfNew` (data action): adds items iff they don't already exist
