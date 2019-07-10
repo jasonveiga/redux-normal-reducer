@@ -518,3 +518,21 @@ export function moveSafe(state, action) {
     ? move(state, action)
     : state;
 }
+
+/**
+ * Creates a reducer capable of handling
+ * Normalizr data ({@link https://github.com/paularmstrong/normalizr}). Since
+ * the data returned from the normalize function can contain multiple entities,
+ * multiple reducers must be created for each entity schema, since each reducer
+ * will update only one entity type in the state.
+ * @param {string} key the entity type, as it appears under entities returned
+ * by the normalize function
+ * @param {function} reducer a reducer function used to process the resulting
+ * data, by default addOrMergeAll. The reducer must be able to handle an
+ * {@link ArrayAction}.
+ */
+export function updateNormalizedReducer(key, reducer = addOrMergeAll) {
+  return function updateNormalized(state, action) {
+    return reducer(state, { data: Object.values(action.data.entities[key]) });
+  };
+}

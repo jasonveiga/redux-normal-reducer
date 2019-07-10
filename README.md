@@ -35,7 +35,7 @@ no reason you can't use npm instead. Some npm scripts are available:
 npm run build
 
 # Generate JSDocs
-npm run jsdoc
+npm run docs
 
 # Test it
 npm start
@@ -46,8 +46,8 @@ code coverage.
 
 # Redux Actions
 
-This package is opinionated about the structure actions it expects. Here are some
-examples:
+This package is opinionated about the structure of the actions it handles. Here
+are some examples:
 
 ```javascript
 // General data action, contains a single item
@@ -148,7 +148,9 @@ import { reducer, throwingReducer, mergeReducer } from 'redux-normal-reducer'
 
 // Plain reducer, contains all basic actions
 const users = reducer()
+```
 
+```javascript
 // Customize the actions with a prefix, and use a custom merge
 const merger = ( existing, update ) => ({ 
     ...existing, 
@@ -167,7 +169,9 @@ const users = reducer({
         otherState: 1
     }
 })
+```
 
+```javascript
 // Use a throwing reducer in development
 let users
 
@@ -177,6 +181,115 @@ if (process.env.NODE_ENV === 'devlopment') {
     users = reducer()
 }
 ```
+
+# Normalizr Data
+
+One package for handling related data and flattening the results is
+[Normalizr](https://github.com/paularmstrong/normalizr). Given a nested data
+structure, where individual items may contain relationships to other items,
+`normalizr` will flatten the data, keeping the actual objects in one place and
+maintaining relationships in the form of IDs or lists of IDs. Example:
+
+```javascript
+import { normalize, schema } from 'normalizr';
+
+// Data such as might be retrieved from an API
+let data = {
+  "id": "123",
+  "author": {
+    "id": "1",
+    "name": "Paul"
+  },
+  "title": "My awesome blog post",
+  "comments": [
+    {
+      "id": "324",
+      "commenter": {
+        "id": "2",
+        "name": "Nicole"
+      }
+    }
+  ]
+}
+
+// -- Define schemas containing relationships --
+
+// Define a users schema
+const user = new schema.Entity('users');
+
+// Define your comments schema
+const comment = new schema.Entity('comments', {
+  commenter: user
+});
+
+// Define your article
+const article = new schema.Entity('articles', {
+  author: user,
+  comments: [comment]
+});
+
+const normalizedData = normalize(originalData, article);
+
+// Normalized data looks like this:
+{
+  result: "123",
+  entities: {
+    "articles": {
+      "123": {
+        id: "123",
+        author: "1",
+        title: "My awesome blog post",
+        comments: [ "324" ]
+      }
+    },
+    "users": {
+      "1": { "id": "1", "name": "Paul" },
+      "2": { "id": "2", "name": "Nicole" }
+    },
+    "comments": {
+      "324": { id: "324", "commenter": "2" }
+    }
+  }
+}
+```
+
+You can create a reducer capable of handling the results of `normalizr.normalize`.
+Note that `normalizr` is not a dependency of `redux-normal-reducer`, so you have to
+take care of creating the schemas and normalizing your data. This reducers are
+created using the following factory:
+
+```javascript
+import { 
+    updateNormalizedReducer, 
+    addOrMergeAllReducer, 
+    reducer 
+} from 'redux-normal-reducer'
+
+// Create reducers to handle artices and users
+// The key used with updateNormalizedReducer must match the
+// key under "entities" in the normalized data.
+const updateNormalizedArticles = updateNormalizedReducer('articles')
+const updateNormalizedUsers = updateNormalizedReducer('users')
+
+// The default method for handling the data uses addOrMergeAll
+let state = { users: { byId: {}, allIds: [] }, articles: { byId: {}, allIds: [] } }
+state.articles = updateNormalizedArticles(state.articles, { data: normalizedData })
+state.users = updateNormalizedArticles(state.users, { data: normalizedData })
+
+// You can customize it to use, for example a custom merge implementation
+const updateNormalizedArticles = updateNormalizedReducer(
+    'articles',
+    addOrMergeAllReducer(myCustomMergeFunction)
+)
+
+// And integrate it into your high-level reducer factory:
+const users = reducer({suffix: '_USER', customReducers: { 
+    UPDATE_NORMALIZED_USER: updateNormalizedReducer('users') 
+}})
+```
+
+The `UPDATE_NORMALIZED` action is supported by the actions method
+described above.
 
 # Low-Level Reducers
 

@@ -64,6 +64,8 @@ export const REPLACE_ALL = "REPLACE_ALL";
 export const REPLACE_ALL_EXISTING = "REPLACE_ALL_EXISTING";
 /** action type: replace item iff it exists, data is an object */
 export const REPLACE_EXISTING = "REPLACE_EXISTING";
+/** action type: update state using data from normalizr.normalize */
+export const UPDATE_NORMALIZED = "UPDATE_NORMALIZED";
 
 export const ALL_ACTION_TYPES = [
   ADD,
@@ -86,7 +88,8 @@ export const ALL_ACTION_TYPES = [
   REPLACE,
   REPLACE_ALL,
   REPLACE_ALL_EXISTING,
-  REPLACE_EXISTING
+  REPLACE_EXISTING,
+  UPDATE_NORMALIZED
 ];
 
 export const actionReducers = {
@@ -129,7 +132,8 @@ export const DATA_ACTION_TYPES = [
   REPLACE,
   REPLACE_ALL,
   REPLACE_ALL_EXISTING,
-  REPLACE_EXISTING
+  REPLACE_EXISTING,
+  UPDATE_NORMALIZED
 ];
 
 const dataActionCreatorFactory = type => data => ({ type, data });

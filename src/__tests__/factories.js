@@ -92,3 +92,19 @@ test("factory reducer ignores unknown action types", () => {
   expect(next).toEqual(state);
   testStateRefEq(next, state);
 });
+
+test("factory reducer applies default state", () => {
+  let state;
+  const myReducer = reducer();
+  const next = myReducer(state, { type: "FOO", payload: "bar" });
+  expect(next).toEqual({ allIds: [], byId: {} });
+});
+
+test("factory reducer applies custom default state", () => {
+  let state;
+  let defaultState = { allIds: [], byId: {}, foo: 123 };
+  const myReducer = reducer({ defaultState });
+  const next = myReducer(state, { type: "FOO", payload: "bar" });
+  expect(next).toEqual(defaultState);
+  testStateRefEq(next, defaultState);
+});

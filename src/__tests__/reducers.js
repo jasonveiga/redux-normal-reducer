@@ -28,7 +28,8 @@ import {
   replace,
   replaceAll,
   replaceAllExisting,
-  replaceExisting
+  replaceExisting,
+  updateNormalizedReducer
 } from "..";
 
 import {
@@ -57,7 +58,8 @@ import {
   replaceAllExistingTest,
   replaceAllTest,
   replaceExistingTest,
-  replaceTest
+  replaceTest,
+  updateNormalizedTest
 } from "./reducers-lib";
 
 describe("test normal reducers", () => {
@@ -100,4 +102,8 @@ describe("test normal reducers", () => {
   test("replace existing (not existing)", replaceExistingTest(replaceExisting));
   test("remove", removeTest(remove));
   test("remove all", removeAllTest(removeAll));
+  test(
+    "updating normalizr data",
+    updateNormalizedTest(updateNormalizedReducer)
+  );
 });

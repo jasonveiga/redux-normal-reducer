@@ -28,7 +28,8 @@ import {
   replace,
   replaceAll,
   replaceAllExisting,
-  replaceExisting
+  replaceExisting,
+  updateNormalizedReducer
 } from "./reducers";
 
 import {
@@ -170,5 +171,6 @@ export {
   sort,
   sortIds,
   throwingReducer,
-  toArray
+  toArray,
+  updateNormalizedReducer
 };

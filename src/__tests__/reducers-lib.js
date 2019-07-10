@@ -369,3 +369,61 @@ export const removeAllTest = removeAll => () => {
   expect(next).toEqual(state);
   testStateRefEq(state, next);
 };
+
+export const updateNormalizedTest = updateNormalizedReducer => () => {
+  let data = {
+    entities: {
+      users: {
+        "1": {
+          id: "1",
+          name: "Paul"
+        },
+        "2": {
+          id: "2",
+          name: "Nicole"
+        },
+        "3": {
+          id: "3",
+          name: "Steve"
+        },
+        "5": {
+          id: "5",
+          name: "Jane"
+        }
+      },
+      comments: {
+        "324": {
+          id: "324",
+          commenter: "2"
+        },
+        "325": {
+          id: "325",
+          commenter: "5"
+        }
+      },
+      articles: {
+        "123": {
+          id: "123",
+          author: "1",
+          title: "My awesome blog post",
+          comments: ["324"]
+        },
+        "124": {
+          id: "124",
+          author: "3",
+          title: "My awesome blog post",
+          comments: ["325"]
+        }
+      }
+    },
+    result: ["123", "124"]
+  };
+
+  let ac = actionCreators.updateNormalized;
+  let updateNormalizedArticles = updateNormalizedReducer("articles");
+  let updateNormalizedComments = updateNormalizedReducer("comments");
+  let next = updateNormalizedArticles(emptyState(), ac(data));
+  expect(next).toEqual(stateFromItems(Object.values(data.entities.articles)));
+  next = updateNormalizedComments(emptyState(), ac(data));
+  expect(next).toEqual(stateFromItems(Object.values(data.entities.comments)));
+};
