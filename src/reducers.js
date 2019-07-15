@@ -221,6 +221,7 @@ export function createAllReducer(creator = defaultCreator) {
     data = data.map(creator);
 
     return {
+      ...state,
       allIds: [...state.allIds, ...data.map(x => x.id)],
       byId: data.reduce(
         (byId, x) => {
@@ -364,6 +365,7 @@ export function replaceAll(state, { data }) {
 export function remove(state, { id }) {
   return state.byId.hasOwnProperty(id)
     ? {
+        ...state,
         allIds: state.allIds.filter(i => i !== id),
         byId: deleteKey(state.byId, id)
       }

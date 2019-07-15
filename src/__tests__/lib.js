@@ -63,6 +63,11 @@ export function removeRandKey(data) {
   return data;
 }
 
+export const randExtra = (data = {}) => ({
+  [randString()]: randData(),
+  ...data
+});
+
 export function randNamedData(id = "", dataSize = 5, data = {}) {
   let vars = [];
   let values = [];
@@ -85,17 +90,19 @@ export function randNamedData(id = "", dataSize = 5, data = {}) {
   return namedData(id, d);
 }
 
-export const stateFromItems = items => ({
+export const stateFromItems = (items, otherState) => ({
   allIds: items.map(item => item.id),
   byId: items.reduce((byId, item) => {
     byId[item.id] = item;
     return byId;
-  }, {})
+  }, {}),
+  ...otherState
 });
 
-export const emptyState = () => ({
+export const emptyState = otherState => ({
   allIds: [],
-  byId: {}
+  byId: {},
+  ...otherState
 });
 
 export function randItems(size = 5, dataSize = 5, items = [], data = {}) {
@@ -111,7 +118,13 @@ export function randItems(size = 5, dataSize = 5, items = [], data = {}) {
   return items;
 }
 
-export const randState = (...args) => stateFromItems(randItems(...args));
+export const randState = (
+  otherState,
+  size = 5,
+  dataSize = 5,
+  items = [],
+  data = {}
+) => stateFromItems(randItems(size, dataSize, items, data), otherState);
 
 export const testRefEq = (a, b) => expect(a === b).toBe(true);
 
