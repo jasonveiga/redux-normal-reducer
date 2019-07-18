@@ -29,6 +29,8 @@ import {
   replaceAll,
   replaceAllExisting,
   replaceExisting,
+  reset,
+  resetReducer,
   updateNormalizedReducer
 } from "..";
 
@@ -59,6 +61,8 @@ import {
   replaceAllTest,
   replaceExistingTest,
   replaceTest,
+  resetTest,
+  resetCustomTest,
   updateNormalizedTest
 } from "./reducers-lib";
 
@@ -102,6 +106,8 @@ describe("test normal reducers", () => {
   test("replace existing (not existing)", replaceExistingTest(replaceExisting));
   test("remove", removeTest(remove));
   test("remove all", removeAllTest(removeAll));
+  test("reset", resetTest(reset));
+  test("reset custom", resetCustomTest(resetReducer));
   test(
     "updating normalizr data",
     updateNormalizedTest(updateNormalizedReducer)

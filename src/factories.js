@@ -24,6 +24,10 @@ import {
   moveOrThrow
 } from "./throwing-reducers";
 
+import { resetReducer } from "./reducers";
+
+import { RESET } from "./actions";
+
 /**
  * Produces a reducer that maps the basic reducers to action types. Action types
  * can be customized with a prefix and a suffix, and action creators will be named
@@ -90,7 +94,13 @@ export function reducer({
     return mapping;
   }, {});
 
-  mapping = { ...mapping, ...customReducers };
+  let resetAction = `${prefix}${RESET}${suffix}`;
+
+  mapping = {
+    ...mapping,
+    [resetAction]: resetReducer(defaultState),
+    ...customReducers
+  };
 
   return (state = defaultState, action) =>
     mapping.hasOwnProperty(action.type)

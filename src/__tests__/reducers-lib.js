@@ -418,6 +418,37 @@ export const removeAllTest = removeAll => () => {
   testStateRefEq(state, next);
 };
 
+export const resetTest = reset => () => {
+  let extra = randExtra();
+  let allItems = randItems(5);
+  let resetItems = randItems(3);
+  let state = stateFromItems(allItems, extra);
+  let resetState = stateFromItems(resetItems, extra);
+  let ac = actionCreators.reset;
+  let next = reset(state, ac());
+  expect(next).toEqual(emptyState(extra));
+  testStateRefNe(state, next);
+  state = stateFromItems(allItems, extra);
+  next = reset(state, ac(resetState));
+  expect(next).toEqual(resetState);
+  testStateRefNe(state, next);
+  expect(next === resetState).toBe(false);
+};
+
+export const resetCustomTest = resetReducer => () => {
+  let extra = randExtra();
+  let allItems = randItems(5);
+  let resetItems = randItems(3);
+  let state = stateFromItems(allItems, extra);
+  let resetState = stateFromItems(resetItems, extra);
+  let reset = resetReducer(resetState);
+  let ac = actionCreators.reset;
+  let next = reset(state, ac(resetState));
+  expect(next).toEqual(resetState);
+  testStateRefNe(state, next);
+  expect(next === resetState).toBe(false);
+};
+
 export const updateNormalizedTest = updateNormalizedReducer => () => {
   let extra = randExtra();
   let data = {

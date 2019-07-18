@@ -336,6 +336,7 @@ won't result in inconsistent `allIds` and `byId`.
 * `removeAll` (remove many action): removes ids iff they exist
 * `replaceExisting` (data action): replaces an item iff it already exists
 * `replaceAllExisting` (array action): replaces items iff they already exist
+* `reset` (data action): resets the state to an empty normalized state, or to a state provided in action.data
 
 ## Throwing Reducers
 
@@ -371,6 +372,12 @@ const merger = (existing, merged) => ({ ...existing, ...merged })
 const create = createReducer(creator)
 const merge = mergeReducer(merger)
 const mergeAll = mergeAllReducer(merger)
+
+// Reset the state with a single item, plus some extra state, rather
+// than empty
+const reset = resetReducer({ 
+   byId: { $default: {} }, allIds: [ '$default' ], foo: 'bar' 
+})
 // ...further customizations as needed
 ```
 
@@ -382,6 +389,7 @@ const mergeAll = mergeAllReducer(merger)
 * `createReducer`
 * `mergeAllReducer`
 * `mergeReducer`
+* `resetReducer`
 
 # Utility Functions
 

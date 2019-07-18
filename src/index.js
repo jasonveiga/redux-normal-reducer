@@ -29,6 +29,8 @@ import {
   replaceAll,
   replaceAllExisting,
   replaceExisting,
+  resetReducer,
+  reset,
   updateNormalizedReducer
 } from "./reducers";
 
@@ -86,6 +88,7 @@ import {
   REPLACE_ALL,
   REPLACE_ALL_EXISTING,
   REPLACE_EXISTING,
+  RESET,
   actions
 } from "./actions";
 
@@ -162,12 +165,15 @@ export {
   REPLACE_ALL,
   REPLACE_EXISTING,
   REPLACE,
+  RESET,
   replace,
   replaceAll,
   replaceAllExisting,
   replaceAllOrThrow,
   replaceExisting,
   replaceOrThrow,
+  resetReducer,
+  reset,
   sort,
   sortIds,
   throwingReducer,

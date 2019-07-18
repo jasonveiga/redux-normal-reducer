@@ -19,7 +19,8 @@ import {
   replace,
   replaceAll,
   replaceAllExisting,
-  replaceExisting
+  replaceExisting,
+  reset
 } from "./reducers";
 
 /** action type: add an item, data is an object */
@@ -64,6 +65,8 @@ export const REPLACE_ALL = "REPLACE_ALL";
 export const REPLACE_ALL_EXISTING = "REPLACE_ALL_EXISTING";
 /** action type: replace item iff it exists, data is an object */
 export const REPLACE_EXISTING = "REPLACE_EXISTING";
+/** action type: reset the state to a new/default value */
+export const RESET = "RESET";
 /** action type: update state using data from normalizr.normalize */
 export const UPDATE_NORMALIZED = "UPDATE_NORMALIZED";
 
@@ -89,6 +92,7 @@ export const ALL_ACTION_TYPES = [
   REPLACE_ALL,
   REPLACE_ALL_EXISTING,
   REPLACE_EXISTING,
+  RESET,
   UPDATE_NORMALIZED
 ];
 
@@ -111,7 +115,8 @@ export const actionReducers = {
   [REMOVE]: remove,
   [REMOVE_ALL]: removeAll,
   [REPLACE_EXISTING]: replaceExisting,
-  [REPLACE_ALL_EXISTING]: replaceAllExisting
+  [REPLACE_ALL_EXISTING]: replaceAllExisting,
+  [RESET]: reset
 };
 
 export const DATA_ACTION_TYPES = [
@@ -133,6 +138,7 @@ export const DATA_ACTION_TYPES = [
   REPLACE_ALL,
   REPLACE_ALL_EXISTING,
   REPLACE_EXISTING,
+  RESET,
   UPDATE_NORMALIZED
 ];
 

@@ -4,6 +4,7 @@ import {
   mergeAllReducer,
   mergeReducer,
   reducer,
+  resetReducer,
   throwingReducer
 } from "..";
 
@@ -26,7 +27,9 @@ import {
   removeAllTest,
   removeTest,
   replaceAllTest,
-  replaceTest
+  replaceTest,
+  resetTest,
+  resetCustomTest
 } from "./reducers-lib";
 
 import { randState, testStateRefEq } from "./lib";
@@ -46,7 +49,8 @@ const standardTests = [
   removeAllTest,
   removeTest,
   replaceAllTest,
-  replaceTest
+  replaceTest,
+  resetTest
 ];
 
 describe("factory reducer default actions", () => {
@@ -61,7 +65,8 @@ const customTests = [
   createCustomTest,
   createAllCustomTest,
   mergeCustomTest,
-  mergeAllCustomTest
+  mergeAllCustomTest,
+  resetCustomTest
 ];
 
 describe("factory reducer with custom actions", () => {
@@ -71,7 +76,9 @@ describe("factory reducer with custom actions", () => {
       reducer({ customReducers: { CREATE_ALL: createAllReducer(creator) } }),
     merger => reducer({ customReducers: { MERGE: mergeReducer(merger) } }),
     merger =>
-      reducer({ customReducers: { MERGE_ALL: mergeAllReducer(merger) } })
+      reducer({ customReducers: { MERGE_ALL: mergeAllReducer(merger) } }),
+    defaultState =>
+      reducer({ customReducers: { RESET: resetReducer(defaultState) } })
   ];
 
   customTests.forEach((t, i) => test(t.name, t(reducers[i])));

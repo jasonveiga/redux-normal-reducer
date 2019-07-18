@@ -538,3 +538,25 @@ export function updateNormalizedReducer(key, reducer = addOrMergeAll) {
     return reducer(state, { data: Object.values(action.data.entities[key]) });
   };
 }
+
+/**
+ * Creates a reducer for resetting the normalize portion of the state. The
+ * resulting reducer will reset the allIds and byId values to the specified
+ * default. In addition, the reducer will apply the contents of action.data
+ * to the state
+ * @param {object} defaultState
+ * @returns {function} reset reducer
+ */
+export function resetReducer(defaultState = { allIds: [], byId: {} }) {
+  return function reset(state, action) {
+    return { ...state, ...defaultState, ...action.data };
+  };
+}
+
+/**
+ * Default reset reducer
+ * @param {NormalizedState} state
+ * @param {DataAction} action
+ * @return {NormalizedState} new state
+ */
+export const reset = resetReducer();
